@@ -6075,6 +6075,23 @@ System.register("~/task", ["jquery"], function($__export) {
 
 
 
+System.register("~/config", [], function($__export) {
+  "use strict";
+  var __moduleName = "~/config";
+  function require(path) {
+    return $traceurRuntime.require("~/config", path);
+  }
+  var AUDIO_DELAY;
+  return {
+    setters: [],
+    execute: function() {
+      AUDIO_DELAY = $__export("AUDIO_DELAY", 100);
+    }
+  };
+});
+
+
+
 System.register("lib/io", ["js-yaml"], function($__export) {
   "use strict";
   var __moduleName = "lib/io";
@@ -6774,7 +6791,7 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
           oscilator.frequency.value = 440;
           var gain = context.createGain();
           gain.gain.value = 0.0;
-          oscilator.start();
+          oscilator.start(audio.currentTime);
           var volume = context.createGain();
           volume.gain.value = channel == 3 ? 0 : 0.1;
           pipe(oscilator)(gain)(volume)(context.destination);
@@ -6952,7 +6969,7 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
 
 
 
-System.register("~/application", ["eventemitter3", "./player", "ramda", "./microphone"], function($__export) {
+System.register("~/application", ["eventemitter3", "./player", "ramda", "./microphone", "./config"], function($__export) {
   "use strict";
   var __moduleName = "~/application";
   function require(path) {
@@ -6961,7 +6978,8 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
   var EventEmitter,
       Player,
       R,
-      Microphone;
+      Microphone,
+      Config;
   return {
     setters: [function(m) {
       EventEmitter = m.default;
@@ -6971,6 +6989,8 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
       R = m.default;
     }, function(m) {
       Microphone = m;
+    }, function(m) {
+      Config = m;
     }],
     execute: function() {
       $__export('default', (function($__super) {
@@ -7006,7 +7026,7 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
                 $__3; !($__3 = $__2.next()).done; ) {
               var note = $__3.value;
               {
-                if (time >= note.time && time < note.endTime) {
+                if (time >= note.time && time < note.endTime + Config.AUDIO_DELAY) {
                   if (Microphone.note) {
                     var deviation = Math.max(0, Math.abs(Microphone.note - note.note) - 0.25);
                     var score = Math.exp(-deviation / 2);

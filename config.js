@@ -47,6 +47,7 @@ System.config({
       "~/midi/note",
       "~/metrics",
       "~/task",
+      "~/config",
       "lib/io",
       "~/views/lyrics",
       "lib/evolve",

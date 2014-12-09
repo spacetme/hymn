@@ -26,7 +26,7 @@ class Voice {
     oscilator.frequency.value = 440
     let gain = context.createGain()
     gain.gain.value = 0.0
-    oscilator.start()
+    oscilator.start(audio.currentTime)
     let volume = context.createGain()
     volume.gain.value = channel == 3 ? 0 : 0.1
     pipe(oscilator)(gain)(volume)(context.destination)
