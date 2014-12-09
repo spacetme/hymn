@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hymn Tests</title>
+  <link rel="stylesheet" href="stylesheets/style.css" media="all">
+  <link rel="shortcut icon" type="image/png" href="vendor/jasmine/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="vendor/jasmine/jasmine.css"> 
+</head>
+<body>
+  <h1>Tests</h1>
+  <script src="https://google.github.io/traceur-compiler/bin/traceur-runtime.js"></script>
+  <script src="vendor/es6-module-loader/es6-module-loader-sans-promises.js"></script>
+  <script src="https://jspm.io/system@0.9.js"></script>
+  <script src="config.js"></script>
+  <script type="text/javascript" src="vendor/jasmine/jasmine.js"></script>
+  <script type="text/javascript" src="vendor/jasmine/jasmine-html.js"></script>
+  <script type="text/javascript" src="spec/support/boot.js"></script>
+  <script>
+    System.import('spec/main').catch(function(e) { console.error(e.stack); setTimeout(function() { throw e }) })
+  </script>
+</body>
+</html>

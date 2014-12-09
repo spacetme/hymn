@@ -1,0 +1,140 @@
+
+$sans-serif: Verdana, sans-serif;
+
+html, body {
+  margin: 0; padding: 0;
+}
+
+body {
+  background: #090807;
+  color: #e9e8e7;
+}
+
+.header {
+  padding: 15px;
+  background: linear-gradient(to bottom, #B88302, #92693D);
+  text-align: center;
+  box-shadow: 0 0px 16px black;
+  position: relative;
+  z-index: 1000;
+  &--title {
+    margin: 0;
+    font: 80px Cursive;
+    color: #FFE66F;
+    text-shadow: 3px 3px 4px rgba(#634B1C, 0.5);
+    @media (max-width: 800px) {
+      font-size: 10vw;
+    }
+  }
+  &--presents {
+    color: #FFE66F;
+    margin: 0;
+    font: 16px $sans-serif;
+  }
+}
+
+.the-dot {
+  position: relative;
+  top: -1.15ex;
+}
+
+.notes-display {
+  position: relative;
+  height: 400px;
+  background: #353433;
+  border-bottom: 1px solid #454443;
+  &--scroll {
+    position: absolute;
+    overflow: auto;
+    top: 0; right: 0; bottom: 0; left: 0;
+  }
+  &--current-time {
+    position: absolute;
+    top: 0; bottom: 0; width: 1px;
+    background: #8b8685;
+  }
+}
+
+
+.notes {
+}
+
+.note {
+  $light: rgba(white, 0.3);
+  $dark: rgba(black, 0.3);
+  box-sizing: border-box;
+  border: 1px solid;
+  border-color: $light $dark $dark $light;
+  border-radius: 3px;
+  position: absolute;
+  height: 12px;
+  background: #8b8685;
+  transform: translateY(-50%);
+  &:not(.is-focus) {
+    opacity: 0.25;
+    &.is-active {
+      opacity: 0.5;
+    }
+  }
+  &.is-focus {
+    z-index: 2000;
+  }
+}
+
+.sing {
+  position: absolute;
+  top: 0; right: 0; left: 0; height: 1px;
+  background: #ccc;
+  &--text {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    font: 10px $sans-serif;
+    color: #ccc;
+  }
+}
+
+.frequency-analysis {
+  background: #353433;
+  position: absolute;
+  bottom: 0; width: 1px;
+}
+
+.task-list {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.task {
+  float: right;
+  clear: right;
+  margin-bottom: 5px;
+  position: relative;
+  width: 180px;
+  background: #090807;
+  border: 1px solid #8b8685;
+  &--text {
+    font: 10px $sans-serif;
+    line-height: 16px;
+    padding-left: 4px;
+    color: rgba(white, 0.75);
+    position: relative;
+    height: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  &--progress-container {
+    position: absolute;
+    top: 1px; right: 1px; bottom: 1px; left: 1px;
+  }
+  &--progress {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; width: 0;
+    background: #656463;
+  }
+}
+
+
+
+

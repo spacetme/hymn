@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hymn</title>
+  <link rel="stylesheet" href="stylesheets/style.css" media="all">
+</head>
+<body>
+  <header class="header">
+    <p class="header--presents">
+      spacet<span class="the-dot">.</span>me Labs Presents
+    </p>
+    <h1 class="header--title">Carols in Harmony</h1>
+  </header>
+  <div class="notes-display">
+    <div id="sing" class="sing">
+      <div id="sing-text" class="sing--text"></div>
+    </div>
+    <div id="progress" class="task-list">
+    </div>
+    <div class="notes-display--scroll" id="notes-scroll">
+      <div style="display:none" class="notes-display--current-time" id="current-time"></div>
+      <div id="notes"></div>
+    </div>
+  </div>
+  <script src="https://google.github.io/traceur-compiler/bin/traceur-runtime.js"></script>
+  <script src="vendor/es6-module-loader/es6-module-loader-sans-promises.src.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
+  <script src="https://jspm.io/system@0.9.js"></script>
+  <script src="config.js"></script>
+  <script>
+    System.import('~/index').catch(function(e) {
+      console.error(e.stack || e)
+    })
+  </script>
+</body>
+</html>
