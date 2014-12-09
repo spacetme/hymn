@@ -5961,11 +5961,11 @@ function define(){};  define.amd = {};
 
 
 })();
-System.register("app/audio", [], function($__export) {
+System.register("~/audio", [], function($__export) {
   "use strict";
-  var __moduleName = "app/audio";
+  var __moduleName = "~/audio";
   function require(path) {
-    return $traceurRuntime.require("app/audio", path);
+    return $traceurRuntime.require("~/audio", path);
   }
   var AudioContext,
       context;
@@ -5999,11 +5999,11 @@ System.register("app/audio", [], function($__export) {
 
 
 
-System.register("app/midi/note", [], function($__export) {
+System.register("~/midi/note", [], function($__export) {
   "use strict";
-  var __moduleName = "app/midi/note";
+  var __moduleName = "~/midi/note";
   function require(path) {
-    return $traceurRuntime.require("app/midi/note", path);
+    return $traceurRuntime.require("~/midi/note", path);
   }
   function mtof(m) {
     return Math.pow(2, (m - 69) / 12) * 440;
@@ -6018,11 +6018,11 @@ System.register("app/midi/note", [], function($__export) {
 
 
 
-System.register("app/metrics", [], function($__export) {
+System.register("~/metrics", [], function($__export) {
   "use strict";
-  var __moduleName = "app/metrics";
+  var __moduleName = "~/metrics";
   function require(path) {
-    return $traceurRuntime.require("app/metrics", path);
+    return $traceurRuntime.require("~/metrics", path);
   }
   function x(time) {
     return time / 1000 * 64;
@@ -6045,11 +6045,11 @@ System.register("app/metrics", [], function($__export) {
 
 
 
-System.register("app/task", ["jquery"], function($__export) {
+System.register("~/task", ["jquery"], function($__export) {
   "use strict";
-  var __moduleName = "app/task";
+  var __moduleName = "~/task";
   function require(path) {
-    return $traceurRuntime.require("app/task", path);
+    return $traceurRuntime.require("~/task", path);
   }
   var $;
   function task(name, promise) {
@@ -6115,11 +6115,11 @@ System.register("lib/io", ["js-yaml"], function($__export) {
 
 
 
-System.register("app/views/lyrics", ["react", "ramda"], function($__export) {
+System.register("~/views/lyrics", ["react", "ramda"], function($__export) {
   "use strict";
-  var __moduleName = "app/views/lyrics";
+  var __moduleName = "~/views/lyrics";
   function require(path) {
-    return $traceurRuntime.require("app/views/lyrics", path);
+    return $traceurRuntime.require("~/views/lyrics", path);
   }
   var React,
       R,
@@ -6259,11 +6259,11 @@ System.register("lib/evolve", ["ramda"], function($__export) {
 
 
 
-System.register("app/views/note", ["react", "../metrics"], function($__export) {
+System.register("~/views/note", ["react", "../metrics"], function($__export) {
   "use strict";
-  var __moduleName = "app/views/note";
+  var __moduleName = "~/views/note";
   function require(path) {
-    return $traceurRuntime.require("app/views/note", path);
+    return $traceurRuntime.require("~/views/note", path);
   }
   var React,
       Metrics;
@@ -6342,11 +6342,11 @@ System.register("github:components/jquery@2.1.1", ["github:components/jquery@2.1
 
 
 })();
-System.register("app/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", "./midi/note", "./metrics", "./task"], function($__export) {
+System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", "./midi/note", "./metrics", "./task"], function($__export) {
   "use strict";
-  var __moduleName = "app/microphone";
+  var __moduleName = "~/microphone";
   function require(path) {
-    return $traceurRuntime.require("app/microphone", path);
+    return $traceurRuntime.require("~/microphone", path);
   }
   var co,
       run,
@@ -6491,11 +6491,11 @@ System.register("app/microphone", ["co", "lib/run", "./audio", "ramda", "jquery"
 
 
 
-System.register("app/lyrics", ["react", "./views/lyrics"], function($__export) {
+System.register("~/lyrics", ["react", "./views/lyrics"], function($__export) {
   "use strict";
-  var __moduleName = "app/lyrics";
+  var __moduleName = "~/lyrics";
   function require(path) {
-    return $traceurRuntime.require("app/lyrics", path);
+    return $traceurRuntime.require("~/lyrics", path);
   }
   var React,
       LyricsView;
@@ -6587,11 +6587,11 @@ System.register("app/lib/notes", ["ramda", "lib/evolve"], function($__export) {
 
 
 
-System.register("app/views/notes", ["react", "./note"], function($__export) {
+System.register("~/views/notes", ["react", "./note"], function($__export) {
   "use strict";
-  var __moduleName = "app/views/notes";
+  var __moduleName = "~/views/notes";
   function require(path) {
-    return $traceurRuntime.require("app/views/notes", path);
+    return $traceurRuntime.require("~/views/notes", path);
   }
   var React,
       NoteView;
@@ -6639,11 +6639,11 @@ System.register("app/views/notes", ["react", "./note"], function($__export) {
 
 
 
-System.register("app/models/song", ["npm:midievents", "app/lib/notes"], function($__export) {
+System.register("~/models/song", ["npm:midievents", "app/lib/notes"], function($__export) {
   "use strict";
-  var __moduleName = "app/models/song";
+  var __moduleName = "~/models/song";
   function require(path) {
-    return $traceurRuntime.require("app/models/song", path);
+    return $traceurRuntime.require("~/models/song", path);
   }
   var MIDIEvents,
       emptyBuilder,
@@ -6711,11 +6711,11 @@ System.register("app/models/song", ["npm:midievents", "app/lib/notes"], function
 
 
 
-System.register("app/player", ["ramda", "./audio", "heap", "lib/run", "co", "./midi/note", "eventemitter3"], function($__export) {
+System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./midi/note", "eventemitter3"], function($__export) {
   "use strict";
-  var __moduleName = "app/player";
+  var __moduleName = "~/player";
   function require(path) {
-    return $traceurRuntime.require("app/player", path);
+    return $traceurRuntime.require("~/player", path);
   }
   var R,
       context,
@@ -6952,11 +6952,11 @@ System.register("app/player", ["ramda", "./audio", "heap", "lib/run", "co", "./m
 
 
 
-System.register("app/application", ["eventemitter3", "./player", "ramda", "./microphone"], function($__export) {
+System.register("~/application", ["eventemitter3", "./player", "ramda", "./microphone"], function($__export) {
   "use strict";
-  var __moduleName = "app/application";
+  var __moduleName = "~/application";
   function require(path) {
-    return $traceurRuntime.require("app/application", path);
+    return $traceurRuntime.require("~/application", path);
   }
   var EventEmitter,
       Player,
@@ -7038,11 +7038,11 @@ System.register("app/application", ["eventemitter3", "./player", "ramda", "./mic
 
 
 
-System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jquery", "./application", "./task", "lib/io", "./lyrics", "./models/song", "./metrics", "./microphone", "./views/notes"], function($__export) {
+System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jquery", "./application", "./task", "lib/io", "./lyrics", "./models/song", "./metrics", "./microphone", "./views/notes"], function($__export) {
   "use strict";
-  var __moduleName = "app/index";
+  var __moduleName = "~/index";
   function require(path) {
-    return $traceurRuntime.require("app/index", path);
+    return $traceurRuntime.require("~/index", path);
   }
   var MIDIFile,
       co,
