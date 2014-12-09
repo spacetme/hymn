@@ -45,7 +45,9 @@ body {
   border-bottom: 1px solid #454443;
   &--scroll {
     position: absolute;
-    overflow: auto;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
     top: 0; right: 0; bottom: 0; left: 0;
   }
   &--current-time {
@@ -69,7 +71,7 @@ body {
   position: absolute;
   height: 12px;
   background: #8b8685;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateZ(0);
   &:not(.is-focus) {
     opacity: 0.25;
     &.is-active {
