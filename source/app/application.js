@@ -3,6 +3,7 @@ import EventEmitter from "eventemitter3"
 import Player from "./player"
 import R from "ramda"
 import * as Microphone from "./microphone"
+import * as Config from "./config"
 
 export default class Application extends EventEmitter {
   constructor() {
@@ -32,7 +33,7 @@ export default class Application extends EventEmitter {
   update(time) {
     if (!this.song) return
     for (let note of this.song.notes) {
-      if (time >= note.time && time < note.endTime) {
+      if (time >= note.time && time < note.endTime + Config.AUDIO_DELAY) {
         if (Microphone.note) {
           let deviation = Math.max(0, Math.abs(Microphone.note - note.note) - 0.25)
           let score = Math.exp(-deviation / 2)

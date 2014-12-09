@@ -2,6 +2,6 @@
 set -x
 cd build
 jspm install
-jspm bundle --inject app/index
+jspm bundle --inject '~/index'
 rm -rf jspm_packages
 

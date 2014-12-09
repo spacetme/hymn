@@ -82,7 +82,7 @@
 
   function moduleLoader(callback) {
     if (typeof Promise != 'undefined') {
-      loadScript("vendor/es6-module-loader/es6-module-loader-sans-promises.js", callback)
+      loadScript("vendor/es6-module-loader/es6-module-loader-sans-promises.src.js", callback)
     } else {
       loadScript("vendor/es6-module-loader/es6-module-loader.js", callback)
     }
