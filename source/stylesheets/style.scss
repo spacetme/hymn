@@ -8,8 +8,12 @@ html, body {
 body {
   background: #090807;
   color: #e9e8e7;
+  font: 18px $sans-serif;
 }
 
+a {
+  color: #fba;
+}
 .header {
   padding: 15px;
   background: linear-gradient(to bottom, #B88302, #92693D);
@@ -138,5 +142,39 @@ body {
 }
 
 
+.welcome {
+  position: absolute;
+  top: 24px; right: 24px; bottom: 24px; left: 24px;
+  display: none;
+  h2 {
+    font-size: 25px;
+    margin: 0 0 16px;
+  }
+  &--songs {
+    position: absolute;
+    top: 84px; right: 0; bottom: 0; left: 0;
+    background: #090807;
+    border: 1px solid #656463;
+    max-width: 360px;
+    padding: 8px 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  &--song-loading {
+    color: #8b8685;
+  }
+}
+
+.song-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  a {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+  }
+}
 
 
