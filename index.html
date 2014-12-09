@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" data-app="~/index">
+<head>
+  <meta charset="UTF-8">
+  <title>Hymn</title>
+  <link rel="stylesheet" href="stylesheets/style.css" media="all">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<body>
+  <header class="header">
+    <p class="header--presents">
+      spacet<span class="the-dot">.</span>me Labs Presents
+    </p>
+    <h1 class="header--title">Carols in Harmony</h1>
+  </header>
+  <div class="notes-display">
+    <div id="sing" class="sing">
+      <div id="sing-text" class="sing--text"></div>
+    </div>
+    <div id="progress" class="task-list">
+    </div>
+    <div class="notes-display--scroll" id="notes-scroll">
+      <div style="display:none" class="notes-display--current-time" id="current-time"></div>
+      <div id="notes"></div>
+    </div>
+  </div>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
+  <script defer src="boot/boot.js"></script>
+</body>
+</html>
