@@ -9,6 +9,7 @@ import $ from "jquery"
 import Application from "./application"
 import task from "./task"
 import * as IO from "lib/io"
+import * as Lyrics from "./lyrics"
 import * as Song from "./models/song"
 import * as Metrics from "./metrics"
 import * as Microphone from "./microphone"
@@ -36,9 +37,8 @@ let loadMidi = co.wrap(function*(fileName, application) {
 })
 
 let loadMetadata = co.wrap(function*(fileName, application) {
-
-  let buffer = yield task(`Loading ${fileName}`, IO.loadFile(fileName))
-
+  let yaml = yield task(`Loading ${fileName}`, IO.loadYaml(fileName))
+  Lyrics.display(yaml.lyrics)
 })
 
 let initializeApplication = co.wrap(function*(application) {
