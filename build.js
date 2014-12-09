@@ -6791,7 +6791,7 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
           oscilator.frequency.value = 440;
           var gain = context.createGain();
           gain.gain.value = 0.0;
-          oscilator.start(audio.currentTime);
+          oscilator.start(context.currentTime);
           var volume = context.createGain();
           volume.gain.value = channel == 3 ? 0 : 0.1;
           pipe(oscilator)(gain)(volume)(context.destination);
