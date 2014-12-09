@@ -108,6 +108,7 @@ function songlistWaitClick($songlist) {
 
 run(co(function*() {
 
+  $('#app-loading').hide()
   let application = new Application()
 
   let m = location.search.match(/f=([^&]+)/)

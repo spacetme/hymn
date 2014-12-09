@@ -47,6 +47,8 @@ a {
   height: 400px;
   background: #353433;
   border-bottom: 1px solid #454443;
+  &--loading {
+  }
   &--scroll {
     position: absolute;
     overflow-y: hidden;
@@ -58,6 +60,17 @@ a {
     position: absolute;
     top: 0; bottom: 0; width: 1px;
     background: #8b8685;
+  }
+  &--loading {
+    position: absolute;
+    color: #8b8685;
+    top: 10px;
+    left: 10px;
+  }
+  .task-list {
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 }
 
@@ -104,12 +117,6 @@ a {
   background: #353433;
   position: absolute;
   bottom: 0; width: 1px;
-}
-
-.task-list {
-  position: absolute;
-  top: 10px;
-  right: 10px;
 }
 
 .task {
