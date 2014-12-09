@@ -1,0 +1,7 @@
+#!/bin/zsh -e
+set -x
+cd build
+jspm install
+jspm bundle --inject app/index
+rm -rf jspm_packages
+

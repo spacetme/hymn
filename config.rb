@@ -13,3 +13,6 @@ configure :build do
   ignore 'jspm_packages/*'
 end
 
+after_build do
+  system "./postbuild"
+end
