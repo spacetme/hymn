@@ -14,6 +14,7 @@
     <h1 class="header--title">Carols in Harmony</h1>
   </header>
   <div class="notes-display">
+    <div id="app-loading" class="notes-display--loading">Loading...</div>
     <div id="sing" class="sing">
       <div id="sing-text" class="sing--text"></div>
     </div>
@@ -23,8 +24,20 @@
       <div style="display:none" class="notes-display--current-time" id="current-time"></div>
       <div id="notes"></div>
     </div>
+    <div class="welcome" id="welcome">
+      <h2>Welcome</h2>
+      <p>Please select a song...</p>
+      <div class="welcome--songs" id="songlist">
+        <div class="js-songlist-loading welcome--song-loading">Loading...</div>
+      </div>
+    </div>
   </div>
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
+  <div id="lyrics">
+  </div>
+  <footer>
+    Product of <a href="http://spacet.me">spacet<span class="the-dot">.</span>me Labs</a>
+  </footer>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.js"></script>
   <script defer src="boot/boot.js"></script>
 </body>
 </html>

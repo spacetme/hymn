@@ -37,63 +37,6 @@ System.register("lib/run", [], function($__export) {
 
 
 
-System.register("app/audio", [], function($__export) {
-  "use strict";
-  var __moduleName = "app/audio";
-  function require(path) {
-    return $traceurRuntime.require("app/audio", path);
-  }
-  var AudioContext,
-      context;
-  function pipeFrom(from) {
-    return function(to) {
-      var $__1;
-      for (var rest = [],
-          $__0 = 1; $__0 < arguments.length; $__0++)
-        rest[$__0 - 1] = arguments[$__0];
-      ($__1 = from).connect.apply($__1, $traceurRuntime.spread([to], rest));
-      return pipeFrom(to);
-    };
-  }
-  function pipe(node) {
-    return pipeFrom(node);
-  }
-  function time() {
-    return context.currentTime;
-  }
-  $__export("pipe", pipe);
-  $__export("time", time);
-  return {
-    setters: [],
-    execute: function() {
-      AudioContext = window.AudioContext || window.webkitAudioContext;
-      context = $__export("context", new AudioContext());
-      $__export('default', context);
-    }
-  };
-});
-
-
-
-System.register("app/midi/note", [], function($__export) {
-  "use strict";
-  var __moduleName = "app/midi/note";
-  function require(path) {
-    return $traceurRuntime.require("app/midi/note", path);
-  }
-  function mtof(m) {
-    return Math.pow(2, (m - 69) / 12) * 440;
-  }
-  $__export("mtof", mtof);
-  return {
-    setters: [],
-    execute: function() {
-    }
-  };
-});
-
-
-
 (function() {
 function define(){};  define.amd = {};
 (function(global, factory) {
@@ -6018,6 +5961,63 @@ function define(){};  define.amd = {};
 
 
 })();
+System.register("app/audio", [], function($__export) {
+  "use strict";
+  var __moduleName = "app/audio";
+  function require(path) {
+    return $traceurRuntime.require("app/audio", path);
+  }
+  var AudioContext,
+      context;
+  function pipeFrom(from) {
+    return function(to) {
+      var $__1;
+      for (var rest = [],
+          $__0 = 1; $__0 < arguments.length; $__0++)
+        rest[$__0 - 1] = arguments[$__0];
+      ($__1 = from).connect.apply($__1, $traceurRuntime.spread([to], rest));
+      return pipeFrom(to);
+    };
+  }
+  function pipe(node) {
+    return pipeFrom(node);
+  }
+  function time() {
+    return context.currentTime;
+  }
+  $__export("pipe", pipe);
+  $__export("time", time);
+  return {
+    setters: [],
+    execute: function() {
+      AudioContext = window.AudioContext || window.webkitAudioContext;
+      context = $__export("context", new AudioContext());
+      $__export('default', context);
+    }
+  };
+});
+
+
+
+System.register("app/midi/note", [], function($__export) {
+  "use strict";
+  var __moduleName = "app/midi/note";
+  function require(path) {
+    return $traceurRuntime.require("app/midi/note", path);
+  }
+  function mtof(m) {
+    return Math.pow(2, (m - 69) / 12) * 440;
+  }
+  $__export("mtof", mtof);
+  return {
+    setters: [],
+    execute: function() {
+    }
+  };
+});
+
+
+
 System.register("app/metrics", [], function($__export) {
   "use strict";
   var __moduleName = "app/metrics";
@@ -6075,13 +6075,15 @@ System.register("app/task", ["jquery"], function($__export) {
 
 
 
-System.register("lib/io", [], function($__export) {
+System.register("lib/io", ["js-yaml"], function($__export) {
   "use strict";
   var __moduleName = "lib/io";
   function require(path) {
     return $traceurRuntime.require("lib/io", path);
   }
+  var yaml;
   function loadFile(url) {
+    var responseType = arguments[1] !== (void 0) ? arguments[1] : 'arraybuffer';
     return new Promise(function(resolve, reject) {
       var xh = new XMLHttpRequest();
       xh.open('GET', url, true);
@@ -6091,14 +6093,138 @@ System.register("lib/io", [], function($__export) {
       xh.onerror = function() {
         reject(new Error(("Error: " + xh.status)));
       };
-      xh.responseType = 'arraybuffer';
+      xh.responseType = responseType;
       xh.send();
     });
   }
+  function loadYaml(url) {
+    return loadFile(url, 'text').then(function(text) {
+      return yaml.safeLoad(text);
+    });
+  }
   $__export("loadFile", loadFile);
+  $__export("loadYaml", loadYaml);
   return {
-    setters: [],
+    setters: [function(m) {
+      yaml = m.default;
+    }],
     execute: function() {
+    }
+  };
+});
+
+
+
+System.register("app/views/lyrics", ["react", "ramda"], function($__export) {
+  "use strict";
+  var __moduleName = "app/views/lyrics";
+  function require(path) {
+    return $traceurRuntime.require("app/views/lyrics", path);
+  }
+  var React,
+      R,
+      C,
+      ColumnView,
+      process;
+  return {
+    setters: [function(m) {
+      React = m.default;
+    }, function(m) {
+      R = m.default;
+    }],
+    execute: function() {
+      C = (function(tag, className, opts) {
+        var $__4;
+        for (var blah = [],
+            $__1 = 3; $__1 < arguments.length; $__1++)
+          blah[$__1 - 3] = arguments[$__1];
+        return ($__4 = React).createElement.apply($__4, $traceurRuntime.spread([tag, Object.assign({className: className}, opts)], blah));
+      });
+      ColumnView = React.createClass({
+        render: function() {
+          var $__0 = this;
+          var main = this.props.main ? ' is-main' : '';
+          return C('div', 'lyrics-display--column' + main, {}, C('ul', 'tabs', {}, this.props.tabs.map((function(tab) {
+            return C('li', $__0.active(tab) ? 'is-active' : '', {
+              key: tab.title,
+              onClick: (function(e) {
+                return $__0.selectTab(tab);
+              }),
+              tabIndex: 0
+            }, tab.title);
+          }))), C('div', 'lyrics-display--content', {}, C('pre', 'lyrics-data', {}, this.state.activeTab.content)));
+        },
+        getInitialState: function() {
+          return {activeTab: this.props.tabs[0]};
+        },
+        active: function(tab) {
+          return tab == this.state.activeTab;
+        },
+        selectTab: function(tab) {
+          this.setState({activeTab: tab});
+        }
+      });
+      process = R.pipe(R.toPairs, R.map((function($__2) {
+        var $__3 = $__2,
+            title = $__3[0],
+            content = $__3[1];
+        return ({
+          title: title,
+          content: content
+        });
+      })), R.partition((function(tab) {
+        return tab.title.match(/^\d+$/);
+      })));
+      $__export('default', React.createClass({
+        render: function() {
+          var data = process(this.getData());
+          var children = [React.createElement(ColumnView, {
+            tabs: data[0],
+            key: 0,
+            main: true
+          })];
+          if (data[1].length > 0) {
+            children.push(React.createElement(ColumnView, {
+              tabs: data[1],
+              key: 1,
+              main: false
+            }));
+          }
+          return React.createElement('div', {className: 'lyrics-display'}, children);
+        },
+        getInitialState: function() {
+          return {lang: 'th'};
+        },
+        getData: function() {
+          return this.props.data[this.state.lang];
+        },
+        renderNotes: function() {
+          var $__0 = this;
+          var application = this.props.application;
+          var notes = application.notes;
+          return notes.map((function(note, index) {
+            return $__0.renderNote(note, index);
+          }));
+        },
+        renderNote: function(note, index) {
+          var application = this.props.application;
+          var player = application.player;
+          var focus = note.channel === application.options.channel;
+          var active = false;
+          var score = focus ? application.scores.get(note) : undefined;
+          var time = player.time();
+          if (time !== undefined && time >= note.time)
+            active = true;
+          return React.createElement(NoteView, {
+            note: note,
+            key: index,
+            player: player,
+            focus: focus,
+            active: active,
+            score: score
+          });
+        }
+      }));
     }
   };
 });
@@ -6216,129 +6342,6 @@ System.register("github:components/jquery@2.1.1", ["github:components/jquery@2.1
 
 
 })();
-System.register("app/lib/notes", ["ramda", "lib/evolve"], function($__export) {
-  "use strict";
-  var __moduleName = "app/lib/notes";
-  function require(path) {
-    return $traceurRuntime.require("app/lib/notes", path);
-  }
-  var ramda,
-      assoc,
-      pick,
-      omit,
-      append,
-      evolve,
-      emptyBuilder;
-  function handleEvent(builder, event) {
-    if (event.velocity > 0) {
-      return evolve(builder, {active: assoc(noteId(event), event)});
-    } else {
-      var id = noteId(event);
-      if (builder.active[id]) {
-        var start = builder.active[id];
-        return evolve(builder, {
-          active: omit([id]),
-          notes: append(createNote(start, event))
-        });
-      }
-    }
-  }
-  function noteId($__0) {
-    var $__1 = $__0,
-        channel = $__1.channel,
-        note = $__1.note;
-    return (channel + ":" + note);
-  }
-  function createNote(start, finish) {
-    var $__0 = start,
-        time = $__0.time,
-        position = $__0.position,
-        channel = $__0.channel,
-        note = $__0.note;
-    var $__1 = finish,
-        endTime = $__1.time,
-        endPosition = $__1.position;
-    return {
-      time: time,
-      endTime: endTime,
-      position: position,
-      endPosition: endPosition,
-      channel: channel,
-      note: note
-    };
-  }
-  $__export("handleEvent", handleEvent);
-  return {
-    setters: [function(m) {
-      ramda = m.default;
-    }, function(m) {
-      evolve = m.default;
-    }],
-    execute: function() {
-      var $__0;
-      (($__0 = ramda, assoc = $__0.assoc, pick = $__0.pick, omit = $__0.omit, append = $__0.append, $__0));
-      emptyBuilder = $__export("emptyBuilder", {
-        notes: [],
-        active: {}
-      });
-    }
-  };
-});
-
-
-
-System.register("app/views/notes", ["react", "./note"], function($__export) {
-  "use strict";
-  var __moduleName = "app/views/notes";
-  function require(path) {
-    return $traceurRuntime.require("app/views/notes", path);
-  }
-  var React,
-      NoteView;
-  return {
-    setters: [function(m) {
-      React = m.default;
-    }, function(m) {
-      NoteView = m.default;
-    }],
-    execute: function() {
-      $__export('default', React.createClass({
-        render: function() {
-          return React.createElement('div', {className: 'notes'}, this.renderNotes());
-        },
-        renderNotes: function() {
-          var $__0 = this;
-          var application = this.props.application;
-          var notes = application.notes;
-          return notes.map((function(note, index) {
-            return $__0.renderNote(note, index);
-          }));
-        },
-        renderNote: function(note, index) {
-          var application = this.props.application;
-          var player = application.player;
-          var focus = note.channel === application.options.channel;
-          var active = false;
-          var score = focus ? application.scores.get(note) : undefined;
-          var time = player.time();
-          if (time !== undefined && time >= note.time)
-            active = true;
-          return React.createElement(NoteView, {
-            note: note,
-            key: index,
-            player: player,
-            focus: focus,
-            active: active,
-            score: score
-          });
-        }
-      }));
-    }
-  };
-});
-
-
-
 System.register("app/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", "./midi/note", "./metrics", "./task"], function($__export) {
   "use strict";
   var __moduleName = "app/microphone";
@@ -6482,6 +6485,154 @@ System.register("app/microphone", ["co", "lib/run", "./audio", "ramda", "jquery"
     execute: function() {
       note = $__export("note", 0);
       NAME = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    }
+  };
+});
+
+
+
+System.register("app/lyrics", ["react", "./views/lyrics"], function($__export) {
+  "use strict";
+  var __moduleName = "app/lyrics";
+  function require(path) {
+    return $traceurRuntime.require("app/lyrics", path);
+  }
+  var React,
+      LyricsView;
+  function display(data) {
+    React.render(React.createElement(LyricsView, {data: data}), document.querySelector('#lyrics'));
+  }
+  $__export("display", display);
+  return {
+    setters: [function(m) {
+      React = m.default;
+    }, function(m) {
+      LyricsView = m.default;
+    }],
+    execute: function() {
+    }
+  };
+});
+
+
+
+System.register("app/lib/notes", ["ramda", "lib/evolve"], function($__export) {
+  "use strict";
+  var __moduleName = "app/lib/notes";
+  function require(path) {
+    return $traceurRuntime.require("app/lib/notes", path);
+  }
+  var ramda,
+      assoc,
+      pick,
+      omit,
+      append,
+      evolve,
+      emptyBuilder;
+  function handleEvent(builder, event) {
+    if (event.velocity > 0) {
+      return evolve(builder, {active: assoc(noteId(event), event)});
+    } else {
+      var id = noteId(event);
+      if (builder.active[id]) {
+        var start = builder.active[id];
+        return evolve(builder, {
+          active: omit([id]),
+          notes: append(createNote(start, event))
+        });
+      }
+    }
+  }
+  function noteId($__0) {
+    var $__1 = $__0,
+        channel = $__1.channel,
+        note = $__1.note;
+    return (channel + ":" + note);
+  }
+  function createNote(start, finish) {
+    var $__0 = start,
+        time = $__0.time,
+        position = $__0.position,
+        channel = $__0.channel,
+        note = $__0.note;
+    var $__1 = finish,
+        endTime = $__1.time,
+        endPosition = $__1.position;
+    return {
+      time: time,
+      endTime: endTime,
+      position: position,
+      endPosition: endPosition,
+      channel: channel,
+      note: note
+    };
+  }
+  $__export("handleEvent", handleEvent);
+  return {
+    setters: [function(m) {
+      ramda = m.default;
+    }, function(m) {
+      evolve = m.default;
+    }],
+    execute: function() {
+      var $__0;
+      (($__0 = ramda, assoc = $__0.assoc, pick = $__0.pick, omit = $__0.omit, append = $__0.append, $__0));
+      emptyBuilder = $__export("emptyBuilder", {
+        notes: [],
+        active: {}
+      });
+    }
+  };
+});
+
+
+
+System.register("app/views/notes", ["react", "./note"], function($__export) {
+  "use strict";
+  var __moduleName = "app/views/notes";
+  function require(path) {
+    return $traceurRuntime.require("app/views/notes", path);
+  }
+  var React,
+      NoteView;
+  return {
+    setters: [function(m) {
+      React = m.default;
+    }, function(m) {
+      NoteView = m.default;
+    }],
+    execute: function() {
+      $__export('default', React.createClass({
+        render: function() {
+          return React.createElement('div', {className: 'notes'}, this.renderNotes());
+        },
+        renderNotes: function() {
+          var $__0 = this;
+          var application = this.props.application;
+          var notes = application.notes;
+          return notes.map((function(note, index) {
+            return $__0.renderNote(note, index);
+          }));
+        },
+        renderNote: function(note, index) {
+          var application = this.props.application;
+          var player = application.player;
+          var focus = note.channel === application.options.channel;
+          var active = false;
+          var score = focus ? application.scores.get(note) : undefined;
+          var time = player.time();
+          if (time !== undefined && time >= note.time)
+            active = true;
+          return React.createElement(NoteView, {
+            note: note,
+            key: index,
+            player: player,
+            focus: focus,
+            active: active,
+            score: score
+          });
+        }
+      }));
     }
   };
 });
@@ -6887,7 +7038,7 @@ System.register("app/application", ["eventemitter3", "./player", "ramda", "./mic
 
 
 
-System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "./application", "./task", "lib/io", "./models/song", "./metrics", "./microphone", "./views/notes"], function($__export) {
+System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jquery", "./application", "./task", "lib/io", "./lyrics", "./models/song", "./metrics", "./microphone", "./views/notes"], function($__export) {
   "use strict";
   var __moduleName = "app/index";
   function require(path) {
@@ -6898,16 +7049,19 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
       React,
       run,
       yaml,
+      $,
       Application,
       task,
       IO,
+      Lyrics,
       Song,
       Metrics,
       Microphone,
       NotesView,
       loadMidi,
       loadMetadata,
-      initializeApplication;
+      initializeApplication,
+      selectSong;
   function render(application) {
     React.render(React.createElement(NotesView, {application: application}), document.querySelector('#notes'));
     var time = application.player.time();
@@ -6916,6 +7070,15 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
         this.scrollLeft = Metrics.x(time) - this.offsetWidth / 4;
       });
     }
+  }
+  function songlistWaitClick($songlist) {
+    return new Promise(function(resolve) {
+      $songlist.on('click', '[data-song]', function() {
+        var x = $(this).attr('data-song');
+        history.pushState({}, '', '?f=' + x);
+        resolve(x);
+      });
+    });
   }
   return {
     setters: [function(m) {
@@ -6929,11 +7092,15 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
     }, function(m) {
       yaml = m.default;
     }, function(m) {
+      $ = m.default;
+    }, function(m) {
       Application = m.default;
     }, function(m) {
       task = m.default;
     }, function(m) {
       IO = m;
+    }, function(m) {
+      Lyrics = m;
     }, function(m) {
       Song = m;
     }, function(m) {
@@ -6944,7 +7111,7 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
       NotesView = m.default;
     }],
     execute: function() {
-      loadMidi = co.wrap($traceurRuntime.initGeneratorFunction(function $__0(fileName, application) {
+      loadMidi = co.wrap($traceurRuntime.initGeneratorFunction(function $__2(fileName, application) {
         var buffer,
             midi,
             song;
@@ -6967,26 +7134,30 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__2, this);
       }));
-      loadMetadata = co.wrap($traceurRuntime.initGeneratorFunction(function $__1(fileName, application) {
-        var buffer;
+      loadMetadata = co.wrap($traceurRuntime.initGeneratorFunction(function $__3(fileName, application) {
+        var yaml;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
             switch ($ctx.state) {
               case 0:
                 $ctx.state = 2;
-                return task(("Loading " + fileName), IO.loadFile(fileName));
+                return task(("Loading " + fileName), IO.loadYaml(fileName));
               case 2:
-                buffer = $ctx.sent;
+                yaml = $ctx.sent;
+                $ctx.state = 4;
+                break;
+              case 4:
+                Lyrics.display(yaml.lyrics);
                 $ctx.state = -2;
                 break;
               default:
                 return $ctx.end();
             }
-        }, $__1, this);
+        }, $__3, this);
       }));
-      initializeApplication = co.wrap($traceurRuntime.initGeneratorFunction(function $__2(application) {
+      initializeApplication = co.wrap($traceurRuntime.initGeneratorFunction(function $__4(application) {
         function doRender() {
           render(application);
         }
@@ -7023,31 +7194,127 @@ System.register("app/index", ["midifile", "co", "react", "lib/run", "js-yaml", "
               default:
                 return $ctx.end();
             }
-        }, $__2, this);
+        }, $__4, this);
       }));
-      run(co($traceurRuntime.initGeneratorFunction(function $__3() {
-        var baseName,
-            application,
-            midiName,
-            metadataName;
+      selectSong = co.wrap($traceurRuntime.initGeneratorFunction(function $__5() {
+        var $welcome,
+            yaml,
+            $songlist,
+            $ul,
+            $__0,
+            $__1,
+            song,
+            result;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
             switch ($ctx.state) {
               case 0:
-                baseName = './hymns/' + location.search.match(/f=([^&]+)/)[1];
-                application = new Application();
-                midiName = baseName + '.mid';
-                metadataName = baseName + '.yml';
+                $welcome = $('#welcome').show();
+                $ctx.state = 12;
+                break;
+              case 12:
+                $ctx.state = 2;
+                return IO.loadYaml('./hymns/index.yml');
+              case 2:
+                yaml = $ctx.sent;
                 $ctx.state = 4;
                 break;
               case 4:
+                $songlist = $('#songlist');
+                $songlist.find('.js-songlist-loading').hide();
+                $ul = $('<ul class="song-list"></ul>').appendTo($songlist);
+                for ($__0 = yaml[$traceurRuntime.toProperty(Symbol.iterator)](); !($__1 = $__0.next()).done; ) {
+                  song = $__1.value;
+                  {
+                    $('<a href="javascript://"></a>').text(song.name).attr('data-song', song.id).appendTo($('<li></li>').appendTo($ul));
+                  }
+                }
+                $ctx.state = 14;
+                break;
+              case 14:
+                $ctx.state = 6;
+                return songlistWaitClick($songlist);
+              case 6:
+                result = $ctx.sent;
+                $ctx.state = 8;
+                break;
+              case 8:
+                $welcome.hide();
+                $ctx.state = 16;
+                break;
+              case 16:
+                $ctx.returnValue = result;
+                $ctx.state = -2;
+                break;
+              default:
+                return $ctx.end();
+            }
+        }, $__5, this);
+      }));
+      run(co($traceurRuntime.initGeneratorFunction(function $__6() {
+        var application,
+            m,
+            song,
+            baseName,
+            midiName,
+            metadataName,
+            $__7,
+            $__8,
+            $__9,
+            $__10;
+        return $traceurRuntime.createGeneratorInstance(function($ctx) {
+          while (true)
+            switch ($ctx.state) {
+              case 0:
+                $('#app-loading').hide();
+                application = new Application();
+                m = location.search.match(/f=([^&]+)/);
+                $ctx.state = 17;
+                break;
+              case 17:
+                $ctx.state = (m) ? 9 : 5;
+                break;
+              case 9:
+                $__7 = m[1];
+                $__10 = $__7;
+                $ctx.state = 10;
+                break;
+              case 5:
+                $__8 = selectSong();
+                $ctx.state = 6;
+                break;
+              case 6:
+                $ctx.state = 2;
+                return $__8;
+              case 2:
+                $__9 = $ctx.sent;
+                $ctx.state = 4;
+                break;
+              case 4:
+                $__10 = $__9;
+                $ctx.state = 10;
+                break;
+              case 10:
+                song = $__10;
+                $ctx.state = 13;
+                break;
+              case 13:
+                baseName = './hymns/' + song;
+                midiName = baseName + '.mid';
+                metadataName = baseName + '.yml';
+                window.onpopstate = (function() {
+                  return location.reload();
+                });
+                $ctx.state = 19;
+                break;
+              case 19:
                 $ctx.returnValue = Promise.all([loadMidi(midiName, application), loadMetadata(metadataName), initializeApplication(application)]);
                 $ctx.state = -2;
                 break;
               default:
                 return $ctx.end();
             }
-        }, $__3, this);
+        }, $__6, this);
       })));
     }
   };

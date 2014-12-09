@@ -1,5 +1,7 @@
 
-export function loadFile(url) {
+import yaml from "js-yaml"
+
+export function loadFile(url, responseType='arraybuffer') {
   return new Promise(function(resolve, reject) {
     let xh = new XMLHttpRequest()
     xh.open('GET', url, true)
@@ -9,8 +11,13 @@ export function loadFile(url) {
     xh.onerror = function() {
       reject(new Error(`Error: ${xh.status}`))
     }
-    xh.responseType = 'arraybuffer'
+    xh.responseType = responseType
     xh.send()
   })
 }
 
+export function loadYaml(url) {
+  return loadFile(url, 'text').then(function(text) {
+    return yaml.safeLoad(text)
+  })
+}

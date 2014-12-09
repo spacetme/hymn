@@ -2,10 +2,15 @@
 ;(function() {
 
   var tasks = [
+    checkpoint('Upgrading Browser Runtime'),
     script("https://google.github.io/traceur-compiler/bin/traceur-runtime.js"),
+    checkpoint('Loading es6-module-loader'),
     moduleLoader,
+    checkpoint('Loading SystemJS'),
     script("https://jspm.io/system@0.9.js"),
+    checkpoint('Loading Application Configuration'),
     script("config.js"),
+    checkpoint('Loading Application'),
     function(callback) {
       System.import(document.documentElement.dataset.app).catch(function(e) {
         console.error(e.stack || e)
@@ -14,6 +19,13 @@
   ]
 
   performTasks(tasks)
+
+  function checkpoint(name) {
+    return function(callback) {
+      document.querySelector('#app-loading').innerHTML = name
+      callback()
+    }
+  }
 
   function parallel(list) {
     return function(callback) {
