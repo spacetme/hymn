@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-app="~/index">
 <head>
   <meta charset="UTF-8">
   <title>Hymn</title>
   <link rel="stylesheet" href="stylesheets/style.css" media="all">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
 <body>
   <header class="header">
@@ -23,15 +24,7 @@
       <div id="notes"></div>
     </div>
   </div>
-  <script src="https://google.github.io/traceur-compiler/bin/traceur-runtime.js"></script>
-  <script src="vendor/es6-module-loader/es6-module-loader-sans-promises.src.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
-  <script src="https://jspm.io/system@0.9.js"></script>
-  <script src="config.js"></script>
-  <script>
-    System.import('~/index').catch(function(e) {
-      console.error(e.stack || e)
-    })
-  </script>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
+  <script defer src="boot/boot.js"></script>
 </body>
 </html>

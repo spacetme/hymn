@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-app="spec/main">
 <head>
   <meta charset="UTF-8">
   <title>Hymn Tests</title>
@@ -9,15 +9,9 @@
 </head>
 <body>
   <h1>Tests</h1>
-  <script src="https://google.github.io/traceur-compiler/bin/traceur-runtime.js"></script>
-  <script src="vendor/es6-module-loader/es6-module-loader-sans-promises.js"></script>
-  <script src="https://jspm.io/system@0.9.js"></script>
-  <script src="config.js"></script>
-  <script type="text/javascript" src="vendor/jasmine/jasmine.js"></script>
-  <script type="text/javascript" src="vendor/jasmine/jasmine-html.js"></script>
-  <script type="text/javascript" src="spec/support/boot.js"></script>
-  <script>
-    System.import('spec/main').catch(function(e) { console.error(e.stack); setTimeout(function() { throw e }) })
-  </script>
+  <script defer src="vendor/jasmine/jasmine.js"></script>
+  <script defer src="vendor/jasmine/jasmine-html.js"></script>
+  <script defer src="spec/support/boot.js"></script>
+  <script defer src="boot/boot.js"></script>
 </body>
 </html>
