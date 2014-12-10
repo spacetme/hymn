@@ -104,6 +104,7 @@ class PlayInstance {
         this.player.emit('time', this.time())
         yield wait(1000 / 60)
       }
+      this.player.stop()
     }.bind(this)))
   }
   stop() {
