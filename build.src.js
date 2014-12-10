@@ -6155,11 +6155,11 @@ System.register("~/views/lyrics", ["react", "ramda"], function($__export) {
     }],
     execute: function() {
       C = (function(tag, className, opts) {
-        var $__4;
+        var $__6;
         for (var blah = [],
-            $__1 = 3; $__1 < arguments.length; $__1++)
-          blah[$__1 - 3] = arguments[$__1];
-        return ($__4 = React).createElement.apply($__4, $traceurRuntime.spread([tag, Object.assign({className: className}, opts)], blah));
+            $__3 = 3; $__3 < arguments.length; $__3++)
+          blah[$__3 - 3] = arguments[$__3];
+        return ($__6 = React).createElement.apply($__6, $traceurRuntime.spread([tag, Object.assign({className: className}, opts)], blah));
       });
       ColumnView = React.createClass({
         render: function() {
@@ -6173,22 +6173,42 @@ System.register("~/views/lyrics", ["react", "ramda"], function($__export) {
               }),
               tabIndex: 0
             }, tab.title);
-          }))), C('div', 'lyrics-display--content', {}, C('pre', 'lyrics-data', {}, this.state.activeTab.content)));
+          }))), C('div', 'lyrics-display--content', {}, C('pre', 'lyrics-data', {}, this.content())));
         },
         getInitialState: function() {
-          return {activeTab: this.props.tabs[0]};
+          return {activeTab: this.props.tabs[0].title};
+        },
+        componentWillReceiveProps: function(props) {
+          var $__0 = this;
+          if (!R.some((function(tab) {
+            return tab.title == $__0.state.activeTab;
+          }), props.tabs)) {
+            this.setState({activeTab: props.tabs[0].title});
+          }
         },
         active: function(tab) {
-          return tab == this.state.activeTab;
+          return tab.title == this.state.activeTab;
+        },
+        content: function() {
+          for (var $__1 = this.props.tabs[$traceurRuntime.toProperty(Symbol.iterator)](),
+              $__2; !($__2 = $__1.next()).done; ) {
+            var tab = $__2.value;
+            {
+              if (tab.title == this.state.activeTab) {
+                return tab.content;
+              }
+            }
+          }
+          return '?';
         },
         selectTab: function(tab) {
-          this.setState({activeTab: tab});
+          this.setState({activeTab: tab.title});
         }
       });
-      process = R.pipe(R.toPairs, R.map((function($__2) {
-        var $__3 = $__2,
-            title = $__3[0],
-            content = $__3[1];
+      process = R.pipe(R.toPairs, R.map((function($__4) {
+        var $__5 = $__4,
+            title = $__5[0],
+            content = $__5[1];
         return ({
           title: title,
           content: content
@@ -6199,7 +6219,7 @@ System.register("~/views/lyrics", ["react", "ramda"], function($__export) {
       $__export('default', React.createClass({
         render: function() {
           var data = process(this.getData());
-          var children = [React.createElement(ColumnView, {
+          var children = [C('div', 'lyrics-display--languages', {}, this.renderLanguageList()), React.createElement(ColumnView, {
             tabs: data[0],
             key: 0,
             main: true
@@ -6214,7 +6234,25 @@ System.register("~/views/lyrics", ["react", "ramda"], function($__export) {
           return React.createElement('div', {className: 'lyrics-display'}, children);
         },
         getInitialState: function() {
-          return {lang: 'th'};
+          return {lang: 'en'};
+        },
+        getLanguages: function() {
+          return R.sortBy(R.I, R.keys(this.props.data));
+        },
+        renderLanguageList: function() {
+          var $__0 = this;
+          return R.map((function(lang) {
+            return C('a', $__0.state.lang == lang ? 'is-active' : '', {
+              onClick: (function(e) {
+                $__0.selectLanguage(lang);
+                e.preventDefault();
+              }),
+              href: '#' + lang
+            }, lang);
+          }), this.getLanguages());
+        },
+        selectLanguage: function(lang) {
+          this.setState({lang: lang});
         },
         getData: function() {
           return this.props.data[this.state.lang];
