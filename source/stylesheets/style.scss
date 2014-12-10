@@ -65,6 +65,11 @@ a {
     top: 10px;
     left: 10px;
   }
+  .options {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
   .task-list {
     position: absolute;
     top: 10px;
@@ -240,5 +245,48 @@ footer {
   a {
     color: #8b8685;
     text-decoration: none;
+  }
+}
+
+.options {
+  overflow: hidden;
+  display: none;
+  &--group {
+    overflow: hidden;
+    float: left;
+    margin-right: 8px;
+    padding: 0 0 3px;
+    button {
+      float: left;
+      appearance: none;
+      background: linear-gradient(to bottom, #454443, #252423);
+      border: 1px solid #555453;
+      color: #8b8685;
+      font: 12px $sans-serif;
+      box-shadow: 0 1px 0 rgba(black, 0.4);
+    }
+    button.is-active {
+      background: linear-gradient(to bottom, #090807, #252423);
+      color: #e9e8e7;
+    }
+    button:focus {
+      outline: none;
+      color: #ffa;
+    }
+    button:not(.is-active) {
+      cursor: pointer;
+      &:active {
+        background: linear-gradient(to bottom, #090807, #454443);
+      }
+    }
+    button:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+    button:not(:first-child) {
+      border-left-width: 0;
+    }
+    button:last-child {
+      border-radius: 0 3px 3px 0;
+    }
   }
 }
