@@ -15,6 +15,12 @@ export class OptionsView extends Pumper {
     this.$element = $(element).show()
     this.channels()
     this.mode()
+    this.bind(
+      options => options.hint,
+      value => {
+        if (value === false) this.$element.find('.js-hint').hide()
+      }
+    )
   }
   channels() {
     var self = this

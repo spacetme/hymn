@@ -10,7 +10,7 @@ export default class Application extends EventEmitter {
 
   constructor() {
     this.song = undefined
-    this.options = { channel: 0, mode: 'practice' }
+    this.options = { channel: 0, mode: 'practice', hint: true }
     this.player = new Player()
     this.player.on('time', (pos) => this.update(pos))
     this.scores = new Map()
@@ -55,6 +55,7 @@ export default class Application extends EventEmitter {
 
   play(start) {
     if (!this.song) return
+    this.setOptions({ hint: false })
     this.player.play(this.song.notes, start, this.options)
     this.scores = new Map()
   }

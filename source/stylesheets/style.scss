@@ -251,6 +251,10 @@ footer {
 .options {
   overflow: hidden;
   display: none;
+  &--hint {
+    clear: left;
+    padding-top: 8px;
+  }
   &--group {
     overflow: hidden;
     float: left;
