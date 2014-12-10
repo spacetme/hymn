@@ -1,5 +1,5 @@
 
-import { emptyBuilder, handleEvent } from "app/lib/notes"
+import { emptyBuilder, handleEvent } from "lib/notes"
 
 describe('notes', function() {
 

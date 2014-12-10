@@ -77,13 +77,7 @@ class PlayInstance {
     this.play()
   }
   voice(ch) {
-    let voice = this.player.synth.voice(ch)
-    let volume = 0.2
-    if (ch == this.options.channel) {
-      volume = 0
-    }
-    voice.volume = volume
-    return voice
+    return this.player.voice(ch)
   }
   _getInitialQueue(notes) {
     let events = R.map(note =>
@@ -128,6 +122,10 @@ export default class Player extends EventEmitter {
 
   constructor() {
     this.synth = new Synth()
+  }
+
+  voice(channel) {
+    return this.synth.voice(channel)
   }
 
   time() {

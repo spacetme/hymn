@@ -31,13 +31,29 @@
         <div class="js-songlist-loading welcome--song-loading">Loading...</div>
       </div>
     </div>
+    <div class="options" id="options">
+      <div class="options--group">
+        <button data-channel="0">Soprano</button>
+        <button data-channel="1">Alto</button>
+        <button data-channel="2">Tenor</button>
+        <button data-channel="3">Bass</button>
+      </div>
+      <div class="options--group">
+        <button data-mode="practice">Practice</button>
+        <button data-mode="listen">Listen</button>
+      </div>
+      <div class="options--hint js-hint">
+        <strong>Hint:</strong> click on the blank area to play / stop
+      </div>
+    </div>
   </div>
   <div id="lyrics">
   </div>
   <footer>
-    Product of <a href="http://spacet.me">spacet<span class="the-dot">.</span>me Labs</a>
+    Product of <a href="http://spacet.me">spacet<span class="the-dot">.</span>me Labs</a><br>
+    This project is open-source. <a href="http://github.com/spacetme/hymn">Fork me on GitHub</a>
   </footer>
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.js"></script>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react.min.js"></script>
   <script defer src="boot/boot.js"></script>
 </body>
 </html>

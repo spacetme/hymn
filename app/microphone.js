@@ -48,7 +48,7 @@ export function start() {
     let highest = 0
     while (yield nextFrame()) {
       analyser.getByteFrequencyData(array)
-      highest = Math.max(highest, ...array)
+      highest = R.max(R.append(highest, array))
       let max = -1
       let maxTotal = -1
       for (let i = 5 * 21; i <= 5 * 96; i ++) {
@@ -63,7 +63,7 @@ export function start() {
           max = midi
         }
       }
-      $('#sing').css('top', Metrics.y(max))
+      $('#sing').css('transform', 'translateY(' + Metrics.y(max) + 'px) translateZ(0)')
       $('#sing-text').text(text(Math.ceil(max)))
       note = max
     }

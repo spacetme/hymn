@@ -23,9 +23,13 @@ System.register("lib/run", [], function($__export) {
     return $traceurRuntime.require("lib/run", path);
   }
   function run(promise) {
-    promise.catch((function(e) {
-      return console.error(e.stack);
-    }));
+    promise.catch(function(e) {
+      console.error('Runtime error occured!', e.toString());
+      console.error(e.stack || e);
+      setTimeout(function() {
+        throw e;
+      }, 0);
+    });
   }
   $__export("default", run);
   return {
@@ -6276,73 +6280,239 @@ System.register("lib/evolve", ["ramda"], function($__export) {
 
 
 
-System.register("~/views/note", ["react", "../metrics"], function($__export) {
+System.register("~/views/note", ["jquery", "lib/pumper/pumper"], function($__export) {
   "use strict";
   var __moduleName = "~/views/note";
   function require(path) {
     return $traceurRuntime.require("~/views/note", path);
   }
-  var React,
-      Metrics;
+  var $,
+      Pumper,
+      onChange;
   return {
     setters: [function(m) {
-      React = m.default;
+      $ = m.default;
     }, function(m) {
+      Pumper = m.default;
+      onChange = m.onChange;
+    }],
+    execute: function() {
+      $__export('default', (function($__super) {
+        var NoteView = function NoteView() {
+          var $__0 = this;
+          $traceurRuntime.superGet(this, NoteView.prototype, "constructor").call(this);
+          this.$element = $('<div class="note"></div>');
+          this.element = this.$element[0];
+          this.bind((function(x) {
+            return x.className;
+          }), onChange((function(v) {
+            return $__0.element.className = v;
+          })));
+          this.bind((function(x) {
+            return x.style;
+          }), onChange.object((function(v) {
+            return $__0.$element.css(v);
+          })));
+          this.bind((function(x) {
+            return x.dataset;
+          }), onChange.object((function(v) {
+            return Object.assign($__0.element.dataset, v);
+          })));
+        };
+        return ($traceurRuntime.createClass)(NoteView, {}, {}, $__super);
+      }(Pumper)));
+    }
+  };
+});
+
+
+
+System.register("lib/pumper/dom", [], function($__export) {
+  "use strict";
+  var __moduleName = "lib/pumper/dom";
+  function require(path) {
+    return $traceurRuntime.require("lib/pumper/dom", path);
+  }
+  function children(container, ChildClass) {
+    var current = {};
+    return function(list) {
+      var toDelete = Object.assign({}, current);
+      list.forEach(function(state, index) {
+        var key = state.key === undefined ? '#' + index : state.key;
+        var isNew = false;
+        if (!current[key]) {
+          current[key] = new ChildClass();
+          isNew = true;
+        }
+        current[key].push(state);
+        delete toDelete[key];
+        if (isNew) {
+          container.appendChild(current[key].element);
+        }
+      });
+      for (var key in toDelete) {
+        var view = toDelete[key];
+        var element = view.element;
+        if (element.parentNode == container)
+          container.removeChild(element);
+      }
+    };
+  }
+  $__export("children", children);
+  return {
+    setters: [],
+    execute: function() {
+    }
+  };
+});
+
+
+
+System.register("~/views/options", ["lib/pumper/pumper", "jquery", "eventemitter3"], function($__export) {
+  "use strict";
+  var __moduleName = "~/views/options";
+  function require(path) {
+    return $traceurRuntime.require("~/views/options", path);
+  }
+  var Pumper,
+      onChange,
+      $,
+      EventEmitter,
+      active,
+      OptionsView;
+  return {
+    setters: [function(m) {
+      Pumper = m.default;
+      onChange = m.onChange;
+    }, function(m) {
+      $ = m.default;
+    }, function(m) {
+      EventEmitter = m.default;
+    }],
+    execute: function() {
+      active = (function(element) {
+        return (function(activeness) {
+          return $(element).toggleClass('is-active', activeness);
+        });
+      });
+      OptionsView = $__export("OptionsView", (function($__super) {
+        var OptionsView = function OptionsView(element) {
+          var $__0 = this;
+          $traceurRuntime.superGet(this, OptionsView.prototype, "constructor").call(this);
+          this.events = new EventEmitter();
+          this.element = element;
+          this.$element = $(element).show();
+          this.channels();
+          this.mode();
+          this.bind((function(options) {
+            return options.hint;
+          }), (function(value) {
+            if (value === false)
+              $__0.$element.find('.js-hint').hide();
+          }));
+        };
+        return ($traceurRuntime.createClass)(OptionsView, {
+          channels: function() {
+            var self = this;
+            this.$element.find('[data-channel]').each(function() {
+              var number = +this.dataset.channel;
+              self.bind((function(options) {
+                return options.channel;
+              }), (function(channel) {
+                return number === channel;
+              }), onChange(active(this)));
+            }).on('click', function() {
+              self.events.emit('channel', +this.dataset.channel);
+            });
+          },
+          mode: function() {
+            var self = this;
+            this.$element.find('[data-mode]').each(function() {
+              var mode = this.dataset.mode;
+              self.bind((function(options) {
+                return options.mode;
+              }), (function(value) {
+                return value === mode;
+              }), onChange(active(this)));
+            }).on('click', function() {
+              self.events.emit('mode', this.dataset.mode);
+            });
+          }
+        }, {}, $__super);
+      }(Pumper)));
+      $__export('default', OptionsView);
+    }
+  };
+});
+
+
+
+System.register("~/view_models/note", ["../metrics"], function($__export) {
+  "use strict";
+  var __moduleName = "~/view_models/note";
+  function require(path) {
+    return $traceurRuntime.require("~/view_models/note", path);
+  }
+  var Metrics;
+  function render(props) {
+    return {
+      className: classes(props),
+      style: style(props, props.note),
+      key: props.key,
+      dataset: {
+        channel: props.note.channel,
+        time: props.note.time
+      }
+    };
+  }
+  function classes(props) {
+    var out = ['note'];
+    var time = props.player.time();
+    if (props.focus) {
+      out.push('is-focus');
+    }
+    if (props.active) {
+      out.push('is-active');
+    }
+    return out.join(' ');
+  }
+  function style(props, note) {
+    var left = Metrics.x(note.time);
+    var top = Metrics.y(note.note);
+    var width = Metrics.x(note.endTime) - Metrics.x(note.time);
+    var color = getColor(props);
+    return {
+      left: left,
+      top: top,
+      width: width,
+      backgroundColor: color
+    };
+  }
+  function getColor(props) {
+    var color = '';
+    var score = props.score;
+    if (score !== undefined) {
+      var r = 1,
+          g = 0;
+      var c = (function(v) {
+        return Math.round(v * 255);
+      });
+      if (score < 0.5) {
+        g = score / 0.5;
+      } else {
+        g = 1;
+        r = (1 - score) * 2;
+      }
+      color = 'rgb(' + c(r) + ',' + c(g) + ',0)';
+    }
+    return color;
+  }
+  $__export("render", render);
+  return {
+    setters: [function(m) {
       Metrics = m;
     }],
     execute: function() {
-      $__export('default', React.createClass({
-        render: function() {
-          return React.createElement('div', {
-            className: this.classes(),
-            style: this.style(this.props.note),
-            'data-channel': this.props.note.channel,
-            'data-time': this.props.note.time
-          });
-        },
-        classes: function() {
-          var out = ['note'];
-          var time = this.props.player.time();
-          if (this.props.focus) {
-            out.push('is-focus');
-          }
-          if (this.props.active) {
-            out.push('is-active');
-          }
-          return out.join(' ');
-        },
-        style: function(note) {
-          var left = Metrics.x(note.time);
-          var top = Metrics.y(note.note);
-          var width = Metrics.x(note.endTime) - Metrics.x(note.time);
-          var color = this.getColor();
-          return {
-            left: left,
-            top: top,
-            width: width,
-            backgroundColor: color
-          };
-        },
-        getColor: function() {
-          var color = '';
-          var score = this.props.score;
-          if (score !== undefined) {
-            var r = 1,
-                g = 0;
-            var c = (function(v) {
-              return Math.round(v * 255);
-            });
-            if (score < 0.5) {
-              g = score / 0.5;
-            } else {
-              g = 1;
-              r = (1 - score) * 2;
-            }
-            color = 'rgb(' + c(r) + ',' + c(g) + ',0)';
-          }
-          return color;
-        }
-      }));
     }
   };
 });
@@ -6393,9 +6563,8 @@ System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", 
     return (NAME[midi % 12] + (Math.floor(midi / 12) - 1));
   }
   function start() {
-    run(co($traceurRuntime.initGeneratorFunction(function $__1() {
-      var $__0,
-          microphone,
+    run(co($traceurRuntime.initGeneratorFunction(function $__0() {
+      var microphone,
           streamSource,
           analyser,
           lp,
@@ -6410,8 +6579,8 @@ System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", 
           total,
           frequency,
           harmonic,
-          $__2,
-          $__3;
+          $__1,
+          $__2;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
@@ -6438,22 +6607,22 @@ System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", 
               $ctx.state = 15;
               break;
             case 15:
-              $__2 = nextFrame();
+              $__1 = nextFrame();
               $ctx.state = 10;
               break;
             case 10:
               $ctx.state = 6;
-              return $__2;
+              return $__1;
             case 6:
-              $__3 = $ctx.sent;
+              $__2 = $ctx.sent;
               $ctx.state = 8;
               break;
             case 8:
-              $ctx.state = ($__3) ? 11 : -2;
+              $ctx.state = ($__2) ? 11 : -2;
               break;
             case 11:
               analyser.getByteFrequencyData(array);
-              highest = ($__0 = Math).max.apply($__0, $traceurRuntime.spread([highest], array));
+              highest = R.max(R.append(highest, array));
               max = -1;
               maxTotal = -1;
               for (i = 5 * 21; i <= 5 * 96; i++) {
@@ -6468,7 +6637,7 @@ System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", 
                   max = midi;
                 }
               }
-              $('#sing').css('top', Metrics.y(max));
+              $('#sing').css('transform', 'translateY(' + Metrics.y(max) + 'px) translateZ(0)');
               $('#sing-text').text(text(Math.ceil(max)));
               $__export("note", note = max);
               $ctx.state = 15;
@@ -6476,7 +6645,7 @@ System.register("~/microphone", ["co", "lib/run", "./audio", "ramda", "jquery", 
             default:
               return $ctx.end();
           }
-      }, $__1, this);
+      }, $__0, this);
     })));
   }
   $__export("start", start);
@@ -6604,52 +6773,82 @@ System.register("app/lib/notes", ["ramda", "lib/evolve"], function($__export) {
 
 
 
-System.register("~/views/notes", ["react", "./note"], function($__export) {
+System.register("~/views/notes", ["./note", "lib/pumper/pumper", "lib/pumper/dom"], function($__export) {
   "use strict";
   var __moduleName = "~/views/notes";
   function require(path) {
     return $traceurRuntime.require("~/views/notes", path);
   }
-  var React,
-      NoteView;
+  var NoteView,
+      Pumper,
+      children;
   return {
     setters: [function(m) {
-      React = m.default;
-    }, function(m) {
       NoteView = m.default;
+    }, function(m) {
+      Pumper = m.default;
+    }, function(m) {
+      children = m.children;
     }],
     execute: function() {
-      $__export('default', React.createClass({
-        render: function() {
-          return React.createElement('div', {className: 'notes'}, this.renderNotes());
-        },
-        renderNotes: function() {
-          var $__0 = this;
-          var application = this.props.application;
-          var notes = application.notes;
-          return notes.map((function(note, index) {
-            return $__0.renderNote(note, index);
-          }));
-        },
-        renderNote: function(note, index) {
-          var application = this.props.application;
-          var player = application.player;
-          var focus = note.channel === application.options.channel;
-          var active = false;
-          var score = focus ? application.scores.get(note) : undefined;
-          var time = player.time();
-          if (time !== undefined && time >= note.time)
-            active = true;
-          return React.createElement(NoteView, {
-            note: note,
-            key: index,
-            player: player,
-            focus: focus,
-            active: active,
-            score: score
-          });
-        }
-      }));
+      $__export('default', (function($__super) {
+        var NotesView = function NotesView(container) {
+          $traceurRuntime.superGet(this, NotesView.prototype, "constructor").call(this);
+          this.bind(children(container, NoteView));
+        };
+        return ($traceurRuntime.createClass)(NotesView, {}, {}, $__super);
+      }(Pumper)));
+    }
+  };
+});
+
+
+
+System.register("~/view_models/notes", ["./note"], function($__export) {
+  "use strict";
+  var __moduleName = "~/view_models/notes";
+  function require(path) {
+    return $traceurRuntime.require("~/view_models/notes", path);
+  }
+  var NoteViewModel;
+  function render($__0) {
+    var application = $__0.application;
+    var notes = application.notes;
+    return notes.map((function(note, index) {
+      return renderNote({
+        application: application,
+        note: note,
+        index: index
+      });
+    }));
+  }
+  function renderNote($__0) {
+    var $__1 = $__0,
+        application = $__1.application,
+        note = $__1.note,
+        index = $__1.index;
+    var player = application.player;
+    var focus = note.channel === application.options.channel;
+    var active = false;
+    var score = focus ? application.scores.get(note) : undefined;
+    var time = player.time();
+    if (time !== undefined && time >= note.time)
+      active = true;
+    return NoteViewModel.render({
+      note: note,
+      key: index,
+      player: player,
+      focus: focus,
+      active: active,
+      score: score
+    });
+  }
+  $__export("render", render);
+  return {
+    setters: [function(m) {
+      NoteViewModel = m;
+    }],
+    execute: function() {
     }
   };
 });
@@ -6722,6 +6921,177 @@ System.register("~/models/song", ["npm:midievents", "app/lib/notes"], function($
     execute: function() {
       var $__2;
       (($__2 = MIDIEvents, NOTE_ON = $__2.EVENT_MIDI_NOTE_ON, NOTE_OFF = $__2.EVENT_MIDI_NOTE_OFF, TIME_SIGNATURE = $__2.EVENT_META_TIME_SIGNATURE, $__2));
+    }
+  };
+});
+
+
+
+System.register("~/renderer", ["./views/notes", "./views/options", "./view_models/notes", "./metrics"], function($__export) {
+  "use strict";
+  var __moduleName = "~/renderer";
+  function require(path) {
+    return $traceurRuntime.require("~/renderer", path);
+  }
+  var NotesView,
+      OptionsView,
+      NotesViewModel,
+      Metrics,
+      notesView,
+      Renderer;
+  return {
+    setters: [function(m) {
+      NotesView = m.default;
+    }, function(m) {
+      OptionsView = m.default;
+    }, function(m) {
+      NotesViewModel = m;
+    }, function(m) {
+      Metrics = m;
+    }],
+    execute: function() {
+      notesView = new NotesView(document.querySelector('#notes'));
+      Renderer = $__export("Renderer", (function() {
+        var Renderer = function Renderer(application) {
+          this.application = application;
+          this.initialize();
+          this.bindEvents();
+          this.render();
+        };
+        return ($traceurRuntime.createClass)(Renderer, {
+          initialize: function() {
+            var application = this.application;
+            $('#notes-scroll').on('click', '.note', function(event) {
+              if (application.playing)
+                return true;
+              var channel = +this.dataset.channel;
+              if (application.options.channel === channel) {
+                var time = +this.dataset.time;
+                application.play(time);
+              } else {
+                application.setOptions({channel: channel});
+              }
+              return false;
+            });
+            $('#notes-scroll').on('click', function(event) {
+              if (application.playing) {
+                application.stop();
+              } else {
+                var x = event.clientX - this.getBoundingClientRect().left + this.scrollLeft;
+                var time = Metrics.time(x);
+                application.play(time);
+              }
+            });
+            this.options = new OptionsView($('#options')[0]);
+            this.options.events.on('channel', (function(channel) {
+              return application.setOptions({channel: channel});
+            }));
+            this.options.events.on('mode', (function(mode) {
+              return application.setOptions({mode: mode});
+            }));
+          },
+          bindEvents: function() {
+            var $__0 = this;
+            this.application.on('update', (function() {
+              return $__0.render();
+            }));
+          },
+          render: function() {
+            this.notes();
+            this.scroll();
+            this.options.push(this.application.options);
+          },
+          notes: function() {
+            var vm = NotesViewModel.render({application: this.application});
+            notesView.push(vm);
+          },
+          scroll: function() {
+            var time = this.application.player.time();
+            if (time !== undefined) {
+              $('#notes-scroll').each(function() {
+                this.scrollLeft = Metrics.x(time) - this.offsetWidth / 4;
+              });
+            }
+          }
+        }, {});
+      }()));
+      Renderer.render = function(application) {
+        return new Renderer(application);
+      };
+      $__export('default', Renderer);
+    }
+  };
+});
+
+
+
+System.register("lib/pumper/pumper", ["deep-equal"], function($__export) {
+  "use strict";
+  var __moduleName = "lib/pumper/pumper";
+  function require(path) {
+    return $traceurRuntime.require("lib/pumper/pumper", path);
+  }
+  var Pumper,
+      onChange,
+      equals;
+  function optionable(defaultOptions, fn) {
+    var wrap = function(options) {
+      var wrapper = function() {
+        return fn.apply(this, [].concat.call([options], [].slice.call(arguments)));
+      };
+      wrapper.displayName = fn + ' with options ' + JSON.stringify(options);
+      wrapper.withOptions = function(newOptions) {
+        return wrap(Object.assign({}, options, newOptions));
+      };
+      return wrapper;
+    };
+    return wrap(defaultOptions);
+  }
+  return {
+    setters: [function(m) {
+      equals = m.default;
+    }],
+    execute: function() {
+      Pumper = $__export("Pumper", (function() {
+        var Pumper = function Pumper() {
+          this._pumper_bindings = [];
+        };
+        return ($traceurRuntime.createClass)(Pumper, {
+          bind: function() {
+            for (var pipeline = [],
+                $__1 = 0; $__1 < arguments.length; $__1++)
+              pipeline[$__1] = arguments[$__1];
+            this._pumper_bindings.push(pipeline.reduce((function(p, f) {
+              return (function(x) {
+                return f(p(x));
+              });
+            })));
+          },
+          push: function(state) {
+            this._pumper_bindings.forEach((function(binding) {
+              return binding(state);
+            }));
+          }
+        }, {});
+      }()));
+      onChange = $__export("onChange", optionable({
+        initial: undefined,
+        equals: Object.is
+      }, function(options, callback) {
+        var last = options.initial;
+        var equals = options.equals;
+        options = null;
+        return function onChangeHandleNewValue(value) {
+          if (!equals(last, value)) {
+            var previous = last;
+            last = value;
+            callback(value, previous);
+          }
+          return value;
+        };
+      }));
+      onChange.object = onChange.withOptions({equals: equals});
+      $__export('default', Pumper);
     }
   };
 });
@@ -6849,13 +7219,7 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
         };
         return ($traceurRuntime.createClass)(PlayInstance, {
           voice: function(ch) {
-            var voice = this.player.synth.voice(ch);
-            var volume = 0.2;
-            if (ch == this.options.channel) {
-              volume = 0;
-            }
-            voice.volume = volume;
-            return voice;
+            return this.player.voice(ch);
           },
           _getInitialQueue: function(notes) {
             var $__0 = this;
@@ -6940,6 +7304,9 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
           this.synth = new Synth();
         };
         return ($traceurRuntime.createClass)(Player, {
+          voice: function(channel) {
+            return this.synth.voice(channel);
+          },
           time: function() {
             return this.playing ? this.playing.time() : undefined;
           },
@@ -6969,7 +7336,51 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
 
 
 
-System.register("~/application", ["eventemitter3", "./player", "ramda", "./microphone", "./config"], function($__export) {
+System.register("~/player_volume", ["lib/pumper/pumper"], function($__export) {
+  "use strict";
+  var __moduleName = "~/player_volume";
+  function require(path) {
+    return $traceurRuntime.require("~/player_volume", path);
+  }
+  var Pumper,
+      onChange;
+  return {
+    setters: [function(m) {
+      Pumper = m.default;
+      onChange = m.onChange;
+    }],
+    execute: function() {
+      $__export('default', (function($__super) {
+        var PlayerVolumeControl = function PlayerVolumeControl(application) {
+          var $__0 = this;
+          $traceurRuntime.superGet(this, PlayerVolumeControl.prototype, "constructor").call(this);
+          for (var i = 0; i < 4; i++)
+            this.bindVoice(i, application.player);
+          application.on('options', (function(options) {
+            return $__0.push(application.options);
+          }));
+          this.push(application.options);
+        };
+        return ($traceurRuntime.createClass)(PlayerVolumeControl, {bindVoice: function(channel, player) {
+            this.bind((function(options) {
+              var focus = options.channel === channel;
+              if (options.mode == 'practice') {
+                return focus ? 0 : 0.2;
+              } else {
+                return focus ? 0.5 : 0.1;
+              }
+            }), onChange((function(volume) {
+              return player.voice(channel).volume = volume;
+            })));
+          }}, {}, $__super);
+      }(Pumper)));
+    }
+  };
+});
+
+
+
+System.register("~/application", ["eventemitter3", "./player", "./player_volume", "ramda", "./microphone", "./config"], function($__export) {
   "use strict";
   var __moduleName = "~/application";
   function require(path) {
@@ -6977,6 +7388,7 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
   }
   var EventEmitter,
       Player,
+      PlayerVolumeControl,
       R,
       Microphone,
       Config;
@@ -6985,6 +7397,8 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
       EventEmitter = m.default;
     }, function(m) {
       Player = m.default;
+    }, function(m) {
+      PlayerVolumeControl = m.default;
     }, function(m) {
       R = m.default;
     }, function(m) {
@@ -6997,12 +7411,17 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
         var Application = function Application() {
           var $__0 = this;
           this.song = undefined;
-          this.options = {channel: 0};
+          this.options = {
+            channel: 0,
+            mode: 'practice',
+            hint: true
+          };
           this.player = new Player();
           this.player.on('time', (function(pos) {
             return $__0.update(pos);
           }));
           this.scores = new Map();
+          new PlayerVolumeControl(this);
         };
         return ($traceurRuntime.createClass)(Application, {
           get song() {
@@ -7015,6 +7434,7 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
           setOptions: function(options) {
             this.options = R.mixin(this.options, options);
             this.emit('update');
+            this.emit('options', this.options);
           },
           get notes() {
             return this._song ? this._song.notes : [];
@@ -7033,6 +7453,8 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
                     var oldScore = this.scores.get(note) || 0;
                     this.scores.set(note, Math.max(oldScore, score));
                   }
+                } else if (this.options.mode != 'practice') {
+                  this.scores.set(note, undefined);
                 }
               }
             }
@@ -7041,6 +7463,7 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
           play: function(start) {
             if (!this.song)
               return;
+            this.setOptions({hint: false});
             this.player.play(this.song.notes, start, this.options);
             this.scores = new Map();
           },
@@ -7058,7 +7481,7 @@ System.register("~/application", ["eventemitter3", "./player", "ramda", "./micro
 
 
 
-System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jquery", "./application", "./task", "lib/io", "./lyrics", "./models/song", "./metrics", "./microphone", "./views/notes"], function($__export) {
+System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jquery", "./application", "./task", "lib/io", "./lyrics", "./models/song", "./metrics", "./microphone", "./renderer"], function($__export) {
   "use strict";
   var __moduleName = "~/index";
   function require(path) {
@@ -7077,20 +7500,11 @@ System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jq
       Song,
       Metrics,
       Microphone,
-      NotesView,
+      Renderer,
       loadMidi,
       loadMetadata,
       initializeApplication,
       selectSong;
-  function render(application) {
-    React.render(React.createElement(NotesView, {application: application}), document.querySelector('#notes'));
-    var time = application.player.time();
-    if (time !== undefined) {
-      $('#notes-scroll').each(function() {
-        this.scrollLeft = Metrics.x(time) - this.offsetWidth / 4;
-      });
-    }
-  }
   function songlistWaitClick($songlist) {
     return new Promise(function(resolve) {
       $songlist.on('click', '[data-song]', function() {
@@ -7128,7 +7542,7 @@ System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jq
     }, function(m) {
       Microphone = m;
     }, function(m) {
-      NotesView = m.default;
+      Renderer = m.default;
     }],
     execute: function() {
       loadMidi = co.wrap($traceurRuntime.initGeneratorFunction(function $__2(fileName, application) {
@@ -7178,37 +7592,12 @@ System.register("~/index", ["midifile", "co", "react", "lib/run", "js-yaml", "jq
         }, $__3, this);
       }));
       initializeApplication = co.wrap($traceurRuntime.initGeneratorFunction(function $__4(application) {
-        function doRender() {
-          render(application);
-        }
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
             switch ($ctx.state) {
               case 0:
                 Microphone.start();
-                application.on('update', doRender);
-                doRender();
-                $('#notes-scroll').on('click', '.note', function(event) {
-                  if (application.playing)
-                    return true;
-                  var channel = +this.dataset.channel;
-                  if (application.options.channel === channel) {
-                    var time = +this.dataset.time;
-                    application.play(time);
-                  } else {
-                    application.setOptions({channel: channel});
-                  }
-                  return false;
-                });
-                $('#notes-scroll').on('click', function(event) {
-                  if (application.playing) {
-                    application.stop();
-                  } else {
-                    var x = event.clientX - this.getBoundingClientRect().left + this.scrollLeft;
-                    var time = Metrics.time(x);
-                    application.play(time);
-                  }
-                });
+                Renderer.render(application);
                 $ctx.state = -2;
                 break;
               default:
@@ -13582,6 +13971,54 @@ System.register("npm:heap@0.2.5/lib/heap", [], true, function(require, exports, 
   return module.exports;
 });
 
+System.register("npm:deep-equal@0.2.1/lib/keys", [], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/npm/deep-equal@0.2.1/lib/keys.js";
+  var __dirname = "jspm_packages/npm/deep-equal@0.2.1/lib";
+exports = module.exports = typeof Object.keys === 'function' ? Object.keys : shim;
+exports.shim = shim;
+function shim(obj) {
+  var keys = [];
+  for (var key in obj)
+    keys.push(key);
+  return keys;
+}
+
+
+
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("npm:deep-equal@0.2.1/lib/is_arguments", [], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/npm/deep-equal@0.2.1/lib/is_arguments.js";
+  var __dirname = "jspm_packages/npm/deep-equal@0.2.1/lib";
+var supportsArgumentsClass = (function() {
+  return Object.prototype.toString.call(arguments);
+})() == '[object Arguments]';
+exports = module.exports = supportsArgumentsClass ? supported : unsupported;
+exports.supported = supported;
+function supported(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+;
+exports.unsupported = unsupported;
+function unsupported(object) {
+  return object && typeof object == 'object' && typeof object.length == 'number' && Object.prototype.hasOwnProperty.call(object, 'callee') && !Object.prototype.propertyIsEnumerable.call(object, 'callee') || false;
+}
+;
+
+
+
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("npm:base64-js@0.0.7", ["npm:base64-js@0.0.7/lib/b64"], true, function(require, exports, module) {
   var global = System.global;
   var __define = global.define;
@@ -13825,6 +14262,96 @@ System.register("npm:heap@0.2.5/index", ["./lib/heap"], true, function(require, 
   var __filename = "jspm_packages/npm/heap@0.2.5/index.js";
   var __dirname = "jspm_packages/npm/heap@0.2.5";
 module.exports = require('./lib/heap');
+
+
+
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("npm:deep-equal@0.2.1/index", ["./lib/keys","./lib/is_arguments"], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/npm/deep-equal@0.2.1/index.js";
+  var __dirname = "jspm_packages/npm/deep-equal@0.2.1";
+var pSlice = Array.prototype.slice;
+var objectKeys = require("./lib/keys");
+var isArguments = require("./lib/is_arguments");
+var deepEqual = module.exports = function(actual, expected, opts) {
+  if (!opts)
+    opts = {};
+  if (actual === expected) {
+    return true;
+  } else if (actual instanceof Date && expected instanceof Date) {
+    return actual.getTime() === expected.getTime();
+  } else if (typeof actual != 'object' && typeof expected != 'object') {
+    return opts.strict ? actual === expected : actual == expected;
+  } else {
+    return objEquiv(actual, expected, opts);
+  }
+};
+function isUndefinedOrNull(value) {
+  return value === null || value === undefined;
+}
+function isBuffer(x) {
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number')
+    return false;
+  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
+    return false;
+  }
+  if (x.length > 0 && typeof x[0] !== 'number')
+    return false;
+  return true;
+}
+function objEquiv(a, b, opts) {
+  var i,
+      key;
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+    return false;
+  if (a.prototype !== b.prototype)
+    return false;
+  if (isArguments(a)) {
+    if (!isArguments(b)) {
+      return false;
+    }
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return deepEqual(a, b, opts);
+  }
+  if (isBuffer(a)) {
+    if (!isBuffer(b)) {
+      return false;
+    }
+    if (a.length !== b.length)
+      return false;
+    for (i = 0; i < a.length; i++) {
+      if (a[i] !== b[i])
+        return false;
+    }
+    return true;
+  }
+  try {
+    var ka = objectKeys(a),
+        kb = objectKeys(b);
+  } catch (e) {
+    return false;
+  }
+  if (ka.length != kb.length)
+    return false;
+  ka.sort();
+  kb.sort();
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false;
+  }
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key], opts))
+      return false;
+  }
+  return true;
+}
 
 
 
@@ -16155,6 +16682,20 @@ System.register("npm:heap@0.2.5", ["npm:heap@0.2.5/index"], true, function(requi
   var __filename = "jspm_packages/npm/heap@0.2.5.js";
   var __dirname = "jspm_packages/npm";
 module.exports = require("npm:heap@0.2.5/index");
+
+
+
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("npm:deep-equal@0.2.1", ["npm:deep-equal@0.2.1/index"], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/npm/deep-equal@0.2.1.js";
+  var __dirname = "jspm_packages/npm";
+module.exports = require("npm:deep-equal@0.2.1/index");
 
 
 
