@@ -63,7 +63,7 @@ export function start() {
           max = midi
         }
       }
-      $('#sing').css('top', Metrics.y(max))
+      $('#sing').css('transform', 'translateY(' + Metrics.y(max) + 'px) translateZ(0)')
       $('#sing-text').text(text(Math.ceil(max)))
       note = max
     }
