@@ -21,19 +21,34 @@ let ColumnView = React.createClass({
               tabIndex: 0 },
             tab.title))),
       C('div', 'lyrics-display--content', {},
-        C('pre', 'lyrics-data', {}, this.state.activeTab.content)))
+        C('pre', 'lyrics-data', {}, this.content())))
   },
 
   getInitialState() {
-    return { activeTab: this.props.tabs[0] }
+    return { activeTab: this.props.tabs[0].title }
+  },
+
+  componentWillReceiveProps(props) {
+    if (!R.some(tab => tab.title == this.state.activeTab, props.tabs)) {
+      this.setState({ activeTab: props.tabs[0].title })
+    }
   },
 
   active(tab) {
-    return tab == this.state.activeTab
+    return tab.title == this.state.activeTab
+  },
+
+  content() {
+    for (var tab of this.props.tabs) {
+      if (tab.title == this.state.activeTab) {
+        return tab.content
+      }
+    }
+    return '?'
   },
   
   selectTab(tab) {
-    this.setState({ activeTab: tab })
+    this.setState({ activeTab: tab.title })
   }
   
 })
@@ -49,6 +64,8 @@ export default React.createClass({
   render() {
     let data = process(this.getData())
     let children = [
+      C('div', 'lyrics-display--languages', {},
+        this.renderLanguageList()),
       React.createElement(ColumnView, { tabs: data[0], key: 0, main: true })
     ]
     if (data[1].length > 0) {
@@ -61,7 +78,31 @@ export default React.createClass({
   },
 
   getInitialState() {
-    return { lang: 'th' }
+    return { lang: 'en' }
+  },
+
+  getLanguages() {
+    return R.sortBy(R.I, R.keys(this.props.data))
+  },
+
+  renderLanguageList() {
+    return R.map(
+      lang => C(
+        'a',
+        this.state.lang == lang ? 'is-active' : '',
+        {
+          onClick: e => {
+            this.selectLanguage(lang)
+            e.preventDefault()
+          },
+          href: '#' + lang
+        },
+        lang),
+      this.getLanguages())
+  },
+
+  selectLanguage(lang) {
+    this.setState({ lang })
   },
 
   getData() {

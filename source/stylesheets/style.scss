@@ -211,6 +211,21 @@ a {
     z-index: 1;
     background: #252423;
   }
+  &--languages {
+    a {
+      display: block;
+      padding: 5px 0;
+      font: 14px $sans-serif;
+      width: 3em;
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      &.is-active {
+        font-weight: bold;
+        color: #e9e8e7;
+      }
+    }
+  }
 }
 
 .lyrics-data {
