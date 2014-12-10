@@ -7253,7 +7253,7 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
                 while (true)
                   switch ($ctx.state) {
                     case 0:
-                      $ctx.state = (!this.stopped && !this.queue.empty()) ? 5 : -2;
+                      $ctx.state = (!this.stopped && !this.queue.empty()) ? 5 : 7;
                       break;
                     case 5:
                       time = this.time() + 300;
@@ -7271,6 +7271,10 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
                     case 2:
                       $ctx.maybeThrow();
                       $ctx.state = 0;
+                      break;
+                    case 7:
+                      this.player.stop();
+                      $ctx.state = -2;
                       break;
                     default:
                       return $ctx.end();
