@@ -12,8 +12,12 @@
     script("config.js"),
     checkpoint('Loading Application'),
     function(callback) {
-      System.import(document.documentElement.dataset.app).catch(function(e) {
-        console.error(e.stack || e)
+      System.import(document.documentElement.dataset.app)
+      .then(function() {
+        callback()
+      })
+      .catch(function(e) {
+        callback(e)
       })
     }
   ]
@@ -75,8 +79,14 @@
   }
 
   function performTasks(taskList) {
-    serial(taskList)(function(error) {
-      if (error) throw error
+    serial(taskList)(function(e) {
+      if (e) {
+        console.error('Application failed to start!')
+        console.error(e.stack || e)
+        setTimeout(function() {
+          throw e
+        }, 0)
+      }
     })
   }
 

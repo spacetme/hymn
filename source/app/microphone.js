@@ -48,7 +48,7 @@ export function start() {
     let highest = 0
     while (yield nextFrame()) {
       analyser.getByteFrequencyData(array)
-      highest = Math.max(highest, ...array)
+      highest = R.max(R.append(highest, array))
       let max = -1
       let maxTotal = -1
       for (let i = 5 * 21; i <= 5 * 96; i ++) {

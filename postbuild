@@ -4,4 +4,7 @@ cd build
 jspm install
 jspm bundle --inject '~/index'
 rm -rf jspm_packages
+mv build.js build.src.js
+mv build.js.map build.src.js.map
+uglifyjs build.src.js --source-map build.js.map --in-source-map build.src.js.map -o build.js
 
