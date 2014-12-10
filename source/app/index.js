@@ -14,10 +14,14 @@ import * as Song from "./models/song"
 import * as Metrics from "./metrics"
 import * as Microphone from "./microphone"
 import NotesView from "./views/notes"
+import * as NotesViewModel from "./view_models/notes"
+
+
+var notesView = new NotesView(document.querySelector('#notes'))
 
 function render(application) {
-  React.render(React.createElement(NotesView, { application }),
-    document.querySelector('#notes'))
+  let vm = NotesViewModel.render({ application })
+  notesView.push(vm)
   let time = application.player.time()
   if (time !== undefined) {
     $('#notes-scroll').each(function() {

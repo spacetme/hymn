@@ -12,6 +12,7 @@ System.config({
 System.config({
   "map": {
     "co": "npm:co@4.0.1",
+    "deep-equal": "npm:deep-equal@0.2.1",
     "eventemitter3": "npm:eventemitter3@0.1.6",
     "heap": "npm:heap@0.2.5",
     "jquery": "github:components/jquery@2.1.1",

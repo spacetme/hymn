@@ -1,30 +1,36 @@
 
-import React from "react"
 import NoteView from "./note"
+import Pumper from "lib/pumper/pumper"
 
-export default React.createClass({
+function children(container, ChildClass) {
+  var current = { }
+  return function(list) {
+    var toDelete = Object.assign({ }, current)
+    list.forEach(function(state, index) {
+      var key = state.key === undefined ? '#' + index : state.key
+      var isNew = false
+      if (!current[key]) {
+        current[key] = new ChildClass()
+        isNew = true
+      }
+      current[key].push(state)
+      delete toDelete[key]
+      if (isNew) {
+        container.appendChild(current[key].element)
+      }
+    })
+    for (let key in toDelete) {
+      let view = toDelete[key]
+      let element = view.element
+      if (element.parentNode == container) container.removeChild(element)
+    }
+  }
+}
 
-  render() {
-    return React.createElement('div', { className: 'notes' },
-      this.renderNotes())
-  },
+export default class NotesView extends Pumper {
+  constructor(container) {
+    super.constructor()
+    this.bind(children(container, NoteView))
+  }
+}
 
-  renderNotes() {
-    let application = this.props.application
-    let notes = application.notes
-    return notes.map((note, index) => this.renderNote(note, index))
-  },
-  
-  renderNote(note, index) {
-    let application = this.props.application
-    let player = application.player
-    let focus = note.channel === application.options.channel
-    let active = false
-    let score = focus ? application.scores.get(note) : undefined
-    let time = player.time()
-    if (time !== undefined && time >= note.time) active = true
-    return React.createElement(NoteView,
-      { note, key: index, player, focus, active, score })
-  },
-
-})

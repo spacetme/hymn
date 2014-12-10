@@ -1,54 +1,24 @@
 
-import React from "react"
-import * as Metrics from "../metrics"
+import $ from "jquery"
+import Pumper from "lib/pumper/pumper"
+import { onChange } from "lib/pumper/pumper"
 
-export default React.createClass({
+export default class NoteView extends Pumper {
 
-  render() {
-    return React.createElement('div', {
-      className: this.classes(),
-      style: this.style(this.props.note),
-      'data-channel': this.props.note.channel,
-      'data-time': this.props.note.time
-    })
-  },
+  constructor() {
+    super.constructor()
+    this.$element = $('<div class="note"></div>')
+    this.element = this.$element[0]
+    this.bind(
+      x => x.className,
+      onChange(v => this.element.className = v))
+    this.bind(
+      x => x.style,
+      onChange.object(v => this.$element.css(v)))
+    this.bind(
+      x => x.dataset,
+      onChange.object(v => Object.assign(this.element.dataset, v)))
+  }
 
-  classes() {
-    let out = ['note']
-    let time = this.props.player.time()
-    if (this.props.focus) {
-      out.push('is-focus')
-    }
-    if (this.props.active) {
-      out.push('is-active')
-    }
-    return out.join(' ')
-  },
-
-  style(note) {
-    let left = Metrics.x(note.time)
-    let top = Metrics.y(note.note)
-    let width = Metrics.x(note.endTime) - Metrics.x(note.time)
-    let color = this.getColor()
-    return { left, top, width, backgroundColor: color }
-  },
-
-  getColor() {
-    let color = ''
-    let score = this.props.score
-    if (score !== undefined) {
-      let r = 1, g = 0
-      let c = v => Math.round(v * 255)
-      if (score < 0.5) {
-        g = score / 0.5
-      } else {
-        g = 1
-        r = (1 - score) * 2
-      }
-      color = 'rgb(' + c(r) + ',' + c(g) + ',0)'
-    }
-    return color
-  },
-
-})
+}
 
