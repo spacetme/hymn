@@ -7218,14 +7218,16 @@ System.register("~/player", ["ramda", "./audio", "heap", "lib/run", "co", "./mid
           start: function(note, time) {
             var $__0 = this;
             var id = ++this.noteId;
-            this.gain.gain.cancelScheduledValues(time);
+            var gain = this.gain.gain.value;
+            this.gain.gain.cancelScheduledValues(time - 0.01);
+            this.gain.value = gain;
             this.gain.gain.setValueAtTime(1, time);
             this.gain.gain.exponentialRampToValueAtTime(0.5, time + 0.25);
             this.osc.frequency.setValueAtTime(mtof(note), time);
             return (function(stopTime) {
               if (id != $__0.noteId)
                 return;
-              $__0.gain.gain.cancelScheduledValues(stopTime);
+              $__0.gain.gain.cancelScheduledValues(stopTime - 0.01);
               $__0.gain.gain.setValueAtTime($__0.gain.gain.value, stopTime);
               $__0.gain.gain.linearRampToValueAtTime(0, stopTime + 0.1);
             });

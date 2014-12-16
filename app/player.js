@@ -43,13 +43,15 @@ class Voice {
   }
   start(note, time) {
     let id = ++this.noteId
-    this.gain.gain.cancelScheduledValues(time)
+    let gain = this.gain.gain.value
+    this.gain.gain.cancelScheduledValues(time - 0.01)
+    this.gain.value = gain
     this.gain.gain.setValueAtTime(1, time)
     this.gain.gain.exponentialRampToValueAtTime(0.5, time + 0.25)
     this.osc.frequency.setValueAtTime(mtof(note), time)
     return (stopTime) => {
       if (id != this.noteId) return
-      this.gain.gain.cancelScheduledValues(stopTime)
+      this.gain.gain.cancelScheduledValues(stopTime - 0.01)
       this.gain.gain.setValueAtTime(this.gain.gain.value, stopTime)
       this.gain.gain.linearRampToValueAtTime(0, stopTime + 0.1)
     }
